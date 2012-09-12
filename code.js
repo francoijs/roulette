@@ -13,7 +13,7 @@ $(function() {
 	"steph.jpg",
 	"youni-steph.png"
     ];
-    var DURATION = 10000;  // ms
+    var DURATION = 5000;  // ms
     var SAMPLES = 20;
 
     var _index = [];
@@ -55,6 +55,7 @@ $(function() {
 	    if (n === _images.length)
 		n = 1;
 	}
+	_index[0] = 0; // mystery man is 1st
     }
 
     var cur;
@@ -63,42 +64,77 @@ $(function() {
 	    cur = arg;
 	    console.log('start roll at '+cur);
 	}
-	if (cur === SAMPLES)
+	if (cur === SAMPLES) {
+	    $('#photo' + _index[cur-1])
+		.addClass('winner');
 	    return;
-	setTimeout(roll, _times[cur]);
-	var top = $('#photo' + _index[cur]).position().top;
-	$(window).scrollTop( top );
+	}
+
+	var next = $('#photo' + _index[cur]);
+	next.animate({ opacity: 1 },
+		     _times[cur],
+		     roll);
+	var prev = $('#photo' + _index[cur-1]);
+	prev.animate({ opacity: 0 },
+		     _times[cur]
+		    );
 	cur++;
+    
+	// setTimeout(roll, _times[cur]);
+	// if (cur-1 > 0)
+	//     $('#photo' + _index[cur-1]).removeClass('visible')
+	//     .addClass('transparent');
+	// $('#photo' + _index[cur]).removeClass('transparent')
+	//     .addClass('visible')
+	// var top = $('#photo' + _index[cur]).position().top;
+	// $(window).scrollTop( top );
     }
 
     // stack images
     _images.forEach(function(f, i) {
-	
+
 	$('<img/>', 
 	  { src: "visages/"+f,
-	    width: $(window).height(),
-	    height: $(window).height(),
-	    id: 'photo'+i
+	    height: $(window).height()-12,
+	    id: 'photo'+i,
 	  })
-	    .css('margin-left', 'auto')
-	    .css('margin-right', 'auto')
-	    .css('text-align', 'center')
-	    .appendTo($('body'));
-	$('<br>').appendTo($('body'));
+	    .css('opacity', 0)
+	    .load(function() {
+		// center align
+		$(this).css('margin-left', function(i) {
+		    var w = this.width;
+		    return ($(window).width()-w)/2;
+		});
+	    })
+	    .appendTo($('#photos'));
+    });
+
+    // show mystery man image
+    $('img#photo0').css('opacity', 1);
+
+    // start
+    $(document).keydown(function(event) {
+	var keycode = (event.keyCode ? event.keyCode : event.which);
+	if (keycode === 13) {
+	    id = _images.indexOf("seb.jpg");
+	    initSamplesLoop(id);
+	    console.log(_times, _index);
+	    roll(1);
+	}
     });
 
     // create links
-    function link(fname) {
-	var id = _images.indexOf(fname);
-	$('<a>'+fname+'</a>').prependTo($('body'))
-	    .bind('click',function(event) {
-		initSamplesLoop(id);
-		console.log(_times, _index);
-		roll(0);
-		event.preventDefault();
-	    }).append($('<br>'));
-    }
+    // function link(fname) {
+    // 	var id = _images.indexOf(fname);
+    // 	$('<a>'+fname+'</a>').prependTo($('body'))
+    // 	    .bind('click',function(event) {
+    // 		initSamplesLoop(id);
+    // 		console.log(_times, _index);
+    // 		roll(1);
+    // 		event.preventDefault();
+    // 	    }).append($('<br>'));
+    // }
     
-    link("seb.jpg");
-    link("steph.jpg");
+    // link("seb.jpg");
+    // link("steph.jpg");
 });

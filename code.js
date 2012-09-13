@@ -5,13 +5,19 @@ $(function() {
 	"028.jpg",
 	"05.jpg",
 	"250px-Mona_Lisa_headcrop.jpg",
+	"DSC00304_modified.JPG",
+	"seb.jpg",
+	"dylan-bob-sunglasses-9904511_modified.jpg",
+	"equ 034_modified.jpg",
+	"equ 252_modified.jpg",
 	"FACES_C4.jpg",
 	"JohnMcCainatDebate1.jpg",
-	"Rose.jpg",
 	"lamine.jpg",
-	"seb.jpg",
+	"P1030021_modified.JPG",
+	"Rose.jpg",
 	"steph.jpg",
-	"youni-steph.png"
+	"youni-steph.png",
+	"obama.jpg"
     ];
     var DURATION = 5000;  // ms
     var SAMPLES = 20;
@@ -61,6 +67,7 @@ $(function() {
     var cur;
     function roll(arg) {
 	if (arg !== undefined) {
+	    $('img').css('opacity', 0);
 	    cur = arg;
 	    console.log('start roll at '+cur);
 	}
@@ -115,8 +122,28 @@ $(function() {
     // start
     $(document).keydown(function(event) {
 	var keycode = (event.keyCode ? event.keyCode : event.which);
-	if (keycode === 13) {
-	    id = _images.indexOf("seb.jpg");
+	console.log(keycode);
+
+	var pho;
+	switch(keycode) {
+	case 66: // b
+	    pho = "seb.jpg";
+	    break;
+
+	case 83: // s
+	    pho = "steph.jpg";
+	    break;
+
+	case 89: // y
+	    pho = "youni-steph.png";
+	    break;
+	    
+	case 13: // ENTER = mystery man 
+	    $('img').css('opacity', 0);
+	    $('img#photo0').css('opacity', 1);
+	}
+	if (pho) {
+	    var id = _images.indexOf(pho);
 	    initSamplesLoop(id);
 	    console.log(_times, _index);
 	    roll(1);
